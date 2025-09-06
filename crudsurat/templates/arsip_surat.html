@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block page_title %}Arsip Surat{% endblock %}
+{% block content %}
+<div class="container">
+    <!-- Kolom Pencarian Judul Surat -->
+    <form method="get" class="mb-4">
+        <div class="input-group">
+            <input type="text" name="q" class="form-control" placeholder="Cari judul surat..." value="{{ request.GET.q }}">
+            <button class="btn btn-primary" type="submit">Cari</button>
+        </div>
+    </form>
+
+    <!-- Tabel Surat -->
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Judul</th>
+                    <th>Nomor Surat</th>
+                    <th>Tanggal Surat</th>
+                    <th>Kategori</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for surat in surat_list %}
+                <tr>
+                    <td>{{ surat.judul }}</td>
+                    <td>{{ surat.nomor_surat }}</td>
+                    <td>{{ surat.tanggal_surat }}</td>
+                    <td>{{ surat.kategori }}</td>
+                    <td>
+                        <a href="{{ surat.get_absolute_url }}" class="btn btn-info btn-sm">Lihat Surat</a>
+                        <a href="{{ surat.file_pdf.url }}" class="btn btn-success btn-sm" download>Unduh</a>
+                        <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#hapusModal{{ surat.pk }}">Hapus</button>
+
+                        <!-- Modal Konfirmasi Hapus -->
+                        <div class="modal fade" id="hapusModal{{ surat.pk }}" tabindex="-1" aria-labelledby="hapusModalLabel{{ surat.pk }}" aria-hidden="true">
+                          <div class="modal-dialog">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="hapusModalLabel{{ surat.pk }}">Konfirmasi Hapus Surat</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                              </div>
+                              <div class="modal-body">
+                                Apakah Anda yakin ingin menghapus surat <strong>{{ surat.judul }}</strong>?
+                              </div>
+                              <div class="modal-footer">
+                                <form method="post" action="{% url 'surat-delete' surat.pk %}">
+                                  {% csrf_token %}
+                                  <button type="submit" class="btn btn-danger">Ya, Hapus</button>
+                                </form>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center">Tidak ada surat ditemukan.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

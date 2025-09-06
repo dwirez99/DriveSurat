@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  # Service untuk database PostgreSQL
+  db:
+    image: postgres:13
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=${SQL_DATABASE}
+      - POSTGRES_USER=${SQL_USER}
+      - POSTGRES_PASSWORD=${SQL_PASSWORD}
+    ports:
+      # Anda bisa hapus baris ini jika tidak perlu mengakses DB dari luar container
+      - "5432:5432"
+
+  # Service untuk aplikasi Django
+  web:
+    build: .
+    # --- PERUBAHAN DIMULAI ---
+    # Perintah diubah untuk menjalankan migrate lalu Gunicorn
+    # Gunicorn adalah WSGI server yang lebih cocok untuk production
+    command: >
+      sh -c "python manage.py migrate &&
+             uvicorn DriveSurat.asgi:application --host 0.0.0.0 --port 8000"
+    # --- PERUBAHAN SELESAI ---
+    volumes:
+      # Mount kode lokal ke container untuk live-reloading
+      - .:/app
+    ports:
+      - "8000:8000"
+    # Membaca environment variables dari file .env
+    env_file:
+      - .env
+    # Memastikan service 'db' berjalan sebelum 'web'
+    depends_on:
+      - db
+
+# Volume untuk persistensi data database
+volumes:
+  postgres_data:
+
