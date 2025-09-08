@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block page_title %}Arsip Surat &gt;&gt; Lihat{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="mb-3">
+                <h4>Nomor: {{ surat.nomor_surat }}</h4>
+                <div>Kategori: {{ surat.kategori }}</div>
+                <div>Judul: {{ surat.judul }}</div>
+                <div>Waktu Unggah: {{ surat.tanggal_unggah|date:'Y-m-d H:i' }}</div>
+            </div>
+            <div class="d-flex justify-content-center align-items-center" style="height:80vh; background:#e9ecef; border:1px solid #ccc;">
+                {% if surat.file_pdf %}
+                    <object data="{% url 'surat-pdf' surat.pk %}#toolbar=0&navpanes=0&scrollbar=0" type="application/pdf" width="100%" height="100%">
+                        <embed src="{% url 'surat-pdf' surat.pk %}" type="application/pdf" width="100%" height="100%" />
+                        <iframe src="{% url 'surat-pdf' surat.pk %}" width="100%" height="100%" style="border:none;"></iframe>
+                        <p class="p-3">Browser tidak mendukung preview PDF. <a href="{% url 'surat-pdf' surat.pk %}" target="_blank">Klik di sini untuk membuka PDF</a></p>
+                    </object>
+                {% else %}
+                    <span class="text-muted">Tidak ada file PDF</span>
+                {% endif %}
+            </div>
+            <div class="d-flex justify-content-start gap-2 mt-4">
+                <a href="{% url 'surat-list' %}" class="btn btn-secondary">&lt;&lt; Kembali</a>
+                {% if surat.file_pdf %}
+                    <a href="{{ surat.file_pdf.url }}" class="btn btn-success" download>Unduh</a>
+                {% endif %}
+                <a href="{% url 'surat-update' surat.pk %}" class="btn btn-info">Edit/Ganti File</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
