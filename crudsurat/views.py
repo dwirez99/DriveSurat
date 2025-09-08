@@ -8,7 +8,39 @@ from django.views.generic import (
     UpdateView,
     DeleteView
 )
-from .models import Surat
+from .models import Surat, KategoriSurat
+# Kategori Surat CRUD Views
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+
+class KategoriSuratListView(ListView):
+    model = KategoriSurat
+    context_object_name = 'kategori_list'
+    template_name = 'kategori_surat.html'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        q = self.request.GET.get('q')
+        if q:
+            queryset = queryset.filter(nama__icontains=q)
+        return queryset
+
+class KategoriSuratCreateView(CreateView):
+    model = KategoriSurat
+    fields = ['nama']
+    template_name = 'form_kategori_surat.html'
+    success_url = reverse_lazy('kategori-list')
+
+class KategoriSuratUpdateView(UpdateView):
+    model = KategoriSurat
+    fields = ['nama']
+    template_name = 'form_kategori_surat.html'
+    success_url = reverse_lazy('kategori-list')
+
+class KategoriSuratDeleteView(DeleteView):
+    model = KategoriSurat
+    context_object_name = 'kategori'
+    template_name = 'kategori_surat_confirm_delete.html'
+    success_url = reverse_lazy('kategori-list')
 from django.db.models import Q
 from django.http import FileResponse, Http404
 from django.views.decorators.clickjacking import xframe_options_exempt

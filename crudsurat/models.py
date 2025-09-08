@@ -2,6 +2,13 @@ import os
 from django.db import models
 from django.urls import reverse
 
+class KategoriSurat(models.Model):
+    nama = models.CharField(max_length=100, unique=True, help_text="Nama kategori surat")
+    judul = models.CharField(max_length=200, blank=True, null=True, help_text="Judul atau perihal surat (opsional)")
+
+    def __str__(self):
+        return self.nama
+
 class Surat(models.Model):
     """
     Model ini merepresentasikan sebuah surat yang diarsipkan.

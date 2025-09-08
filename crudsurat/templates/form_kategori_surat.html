@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block page_title %}
+    {% if form.instance.pk %}
+        Edit Kategori Surat
+    {% else %}
+        Tambah Kategori Surat
+    {% endif %}
+{% endblock %}
+{% block content %}
+<div class="container" style="max-width: 600px;">
+    <h3>Kategori Surat &gt;&gt; {% if form.instance.pk %}Edit{% else %}Tambah{% endif %}</h3>
+    <p>Tambahkan atau edit data kategori. Jika sudah selesai, jangan lupa untuk mengklik tombol "Simpan"</p>
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="id_kategori" class="form-label">ID (Auto Increment)</label>
+            <input type="text" class="form-control" id="id_kategori" name="id_kategori" value="{{ form.instance.pk|default_if_none:'' }}" readonly>
+        </div>
+        <div class="mb-3">
+            <label for="nama" class="form-label">Nama Kategori</label>
+            <input type="text" class="form-control" id="nama" name="nama" required value="{{ form.instance.nama|default_if_none:'' }}">
+        </div>
+        <div class="mb-3">
+            <label for="judul" class="form-label">Judul</label>
+            <textarea class="form-control" id="judul" name="judul" rows="3">{{ form.instance.judul|default_if_none:'' }}</textarea>
+        </div>
+        <div class="mb-3">
+            <small class="form-text text-muted">Kategori ini digunakan untuk surat yang sifatnya berupa pengumuman atau menginformasikan suatu perihal.</small>
+        </div>
+        <div class="d-flex justify-content-between">
+            <a href="{% url 'kategori-list' %}" class="btn btn-secondary">&lt;&lt; Kembali</a>
+            <button type="submit" class="btn btn-primary">Simpan</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
