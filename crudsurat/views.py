@@ -1,4 +1,6 @@
 from django.urls import reverse_lazy
+from django.shortcuts import render, redirect
+from django.contrib import messages
 from django.views.generic import (
     ListView,
     DetailView,
@@ -8,6 +10,10 @@ from django.views.generic import (
 )
 from .models import Surat
 from django.db.models import Q
+from django.http import FileResponse, Http404
+from django.views.decorators.clickjacking import xframe_options_exempt
+import mimetypes
+import os
 
 # Tampilan untuk menampilkan daftar semua surat dengan pencarian
 class SuratListView(ListView):
@@ -27,19 +33,23 @@ class SuratListView(ListView):
 class SuratDetailView(DetailView):
     model = Surat
     context_object_name = 'surat'
-    template_name = 'crudsurat/surat_detail.html' # Disesuaikan
+    template_name = 'lihat_surat.html'
 
 # Tampilan untuk membuat/mengunggah surat baru
-class SuratCreateView(CreateView):
+class UploadSuratView(CreateView):
     model = Surat
     fields = ['judul', 'nomor_surat', 'tanggal_surat', 'pengirim', 'penerima', 'kategori', 'file_pdf']
-    template_name = 'crudsurat/surat_form.html' # Disesuaikan
-    success_url = reverse_lazy('surat-list') # Disesuaikan
+    template_name = 'upload_surat.html'
+    success_url = reverse_lazy('surat-list')
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['page_title'] = "Unggah Surat Baru"
-        return context
+    def form_valid(self, form):
+        file_pdf = self.request.FILES.get('file_pdf')
+        if file_pdf and file_pdf.name.lower().endswith('.pdf'):
+            messages.success(self.request, "Data Berhasil Disimpan")
+            return super().form_valid(form)
+        else:
+            messages.error(self.request, "File harus berformat PDF")
+            return self.form_invalid(form)
 
 # Tampilan untuk memperbarui data surat yang sudah ada
 class SuratUpdateView(UpdateView):
@@ -59,3 +69,24 @@ class SuratDeleteView(DeleteView):
     context_object_name = 'surat'
     template_name = 'crudsurat/surat_confirm_delete.html' # Disesuaikan
     success_url = reverse_lazy('surat-list') # Disesuaikan
+
+
+# View khusus untuk menampilkan PDF agar bisa di-embed dalam iframe/object
+@xframe_options_exempt
+def pdf_view(request, pk: int):
+    try:
+        surat = Surat.objects.get(pk=pk)
+    except Surat.DoesNotExist:
+        raise Http404("Surat tidak ditemukan")
+
+    if not surat.file_pdf:
+        raise Http404("File PDF tidak ditemukan")
+
+    # Buka file dan kirim sebagai respon inline
+    file_handle = surat.file_pdf.open('rb')
+    # Gunakan content-type PDF secara eksplisit untuk konsistensi render
+    response = FileResponse(file_handle, content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename="{os.path.basename(surat.file_pdf.name)}"'
+    # Pastikan bisa di-embed di iframe/object
+    response['X-Frame-Options'] = 'ALLOWALL'
+    return response

@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-q@g1e#n+*t6cjugc)k)^e2u0$xr#egxhb&@t-l^)h#fs6w#nx^
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '*']
 
 
 # Application definition
@@ -78,12 +78,21 @@ WSGI_APPLICATION = 'DriveSurat.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
+DATABASES = {}
+if os.environ.get('SQL_DATABASE') and os.environ.get('SQL_USER') and os.environ.get('SQL_PASSWORD'):
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('SQL_DATABASE'),
+        'USER': os.environ.get('SQL_USER'),
+        'PASSWORD': os.environ.get('SQL_PASSWORD'),
+        'HOST': os.environ.get('SQL_HOST', 'db'),
+        'PORT': os.environ.get('SQL_PORT', '5432'),
+    }
+else:
+    DATABASES['default'] = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
-}
 
 
 # Password validation
@@ -128,4 +137,8 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# Allow iframe embedding
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+

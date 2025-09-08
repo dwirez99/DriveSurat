@@ -55,10 +55,9 @@
 <body>
     <div class="sidebar">
         <h4 class="text-center py-2">Menu</h4>
-        <a href="/">Dashboard</a>
-        <a href="/Arsip/">Daftar Surat</a>
+        <a href="{% url 'surat-list' %}">Daftar Surat</a>
         <a href="/kategori/">Kategori Surat</a>
-        <a href="/About/">Unggah Surat</a>
+        <a href="/About/">About</a>
         <!-- Tambahkan menu lain sesuai kebutuhan -->
     </div>
     <div class="main-content">
