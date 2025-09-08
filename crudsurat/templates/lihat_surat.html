@@ -5,11 +5,14 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
-            <div class="mb-3">
-                <h4>Nomor: {{ surat.nomor_surat }}</h4>
-                <div>Kategori: {{ surat.kategori }}</div>
-                <div>Judul: {{ surat.judul }}</div>
-                <div>Waktu Unggah: {{ surat.tanggal_unggah|date:'Y-m-d H:i' }}</div>
+            <div class="mb-3 d-flex justify-content-between align-items-center">
+                <div>
+                    <h4>Nomor: {{ surat.nomor_surat }}</h4>
+                    <div>Kategori: {{ surat.kategori }}</div>
+                    <div>Judul: {{ surat.judul }}</div>
+                    <div>Waktu Unggah: {{ surat.tanggal_unggah|date:'Y-m-d H:i' }}</div>
+                </div>
+                <a href="{% url 'surat-update' surat.pk %}" class="btn btn-warning">Edit</a>
             </div>
             <div class="d-flex justify-content-center align-items-center" style="height:80vh; background:#e9ecef; border:1px solid #ccc;">
                 {% if surat.file_pdf %}

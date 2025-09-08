@@ -40,13 +40,14 @@ class UploadSuratView(CreateView):
     model = Surat
     fields = ['judul', 'nomor_surat', 'tanggal_surat', 'pengirim', 'penerima', 'kategori', 'file_pdf']
     template_name = 'upload_surat.html'
-    success_url = reverse_lazy('surat-list')
 
     def form_valid(self, form):
         file_pdf = self.request.FILES.get('file_pdf')
         if file_pdf and file_pdf.name.lower().endswith('.pdf'):
+            self.object = form.save()
             messages.success(self.request, "Data Berhasil Disimpan")
-            return super().form_valid(form)
+            # Render the same form page with a fresh form and success message
+            return self.render_to_response(self.get_context_data(form=self.get_form(self.get_form_class())))
         else:
             messages.error(self.request, "File harus berformat PDF")
             return self.form_invalid(form)
@@ -55,12 +56,15 @@ class UploadSuratView(CreateView):
 class SuratUpdateView(UpdateView):
     model = Surat
     fields = ['judul', 'nomor_surat', 'tanggal_surat', 'pengirim', 'penerima', 'kategori', 'file_pdf']
-    template_name = 'crudsurat/surat_form.html' # Disesuaikan
-    success_url = reverse_lazy('surat-list') # Disesuaikan
+    template_name = 'upload_surat.html'
+    success_url = reverse_lazy('surat-list')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['page_title'] = "Edit Data Surat"
+        # Ensure form is bound to the instance for pre-filled fields
+        if 'form' not in context:
+            context['form'] = self.get_form()
         return context
 
 # Tampilan untuk menghapus surat

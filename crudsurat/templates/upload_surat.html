@@ -1,48 +1,77 @@
 {% extends "base.html" %}
 
-{% block page_title %}Upload Surat{% endblock %}
+{% block page_title %}
+    {% if form.instance.pk %}
+        Update Surat
+    {% else %}
+        Upload Surat
+    {% endif %}
+{% endblock %}
 {% block content %}
 <div class="container" style="max-width: 600px;">
     {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-success">{{ message }}</div>
-        {% endfor %}
+        <div aria-live="polite" aria-atomic="true" class="position-relative">
+            <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
+                {% for message in messages %}
+                    <div class="toast align-items-center text-bg-success border-0 show" role="alert" aria-live="assertive" aria-atomic="true" id="successToast">
+                        <div class="d-flex">
+                            <div class="toast-body">
+                                {{ message }}
+                            </div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var toastElList = [].slice.call(document.querySelectorAll('.toast'));
+                toastElList.forEach(function(toastEl) {
+                    var toast = new bootstrap.Toast(toastEl, { delay: 10000 });
+                    toast.show();
+                });
+            });
+        </script>
     {% endif %}
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="mb-3">
             <label for="judul" class="form-label">Judul Surat</label>
-            <input type="text" class="form-control" id="judul" name="judul" required>
+            <input type="text" class="form-control" id="judul" name="judul" required value="{{ form.data.judul|default:form.initial.judul|default_if_none:'' }}">
         </div>
         <div class="mb-3">
             <label for="nomor_surat" class="form-label">Nomor Surat</label>
-            <input type="text" class="form-control" id="nomor_surat" name="nomor_surat" required>
+            <input type="text" class="form-control" id="nomor_surat" name="nomor_surat" required value="{{ form.data.nomor_surat|default:form.initial.nomor_surat|default_if_none:'' }}">
         </div>
         <div class="mb-3">
             <label for="tanggal_surat" class="form-label">Tanggal Surat</label>
-            <input type="date" class="form-control" id="tanggal_surat" name="tanggal_surat" required>
+            <input type="date" class="form-control" id="tanggal_surat" name="tanggal_surat" required value="{{ form.data.tanggal_surat|default:form.initial.tanggal_surat|date:'Y-m-d' }}">
         </div>
         <div class="mb-3">
             <label for="pengirim" class="form-label">Pengirim</label>
-            <input type="text" class="form-control" id="pengirim" name="pengirim" required>
+            <input type="text" class="form-control" id="pengirim" name="pengirim" required value="{{ form.data.pengirim|default:form.initial.pengirim|default_if_none:'' }}">
         </div>
         <div class="mb-3">
             <label for="penerima" class="form-label">Penerima</label>
-            <input type="text" class="form-control" id="penerima" name="penerima" required>
+            <input type="text" class="form-control" id="penerima" name="penerima" required value="{{ form.data.penerima|default:form.initial.penerima|default_if_none:'' }}">
         </div>
         <div class="mb-3">
             <label for="kategori" class="form-label">Kategori Surat</label>
             <select class="form-select" id="kategori" name="kategori" required>
                 <option value="">Pilih Kategori</option>
-                <option value="Undangan">Undangan</option>
-                <option value="Pengumuman">Pengumuman</option>
-                <option value="Nota Dinas">Nota Dinas</option>
-                <option value="Pemberitahuan">Pemberitahuan</option>
+                <option value="Undangan" {% if form.data.kategori == 'Undangan' or form.initial.kategori == 'Undangan' %}selected{% endif %}>Undangan</option>
+                <option value="Pengumuman" {% if form.data.kategori == 'Pengumuman' or form.initial.kategori == 'Pengumuman' %}selected{% endif %}>Pengumuman</option>
+                <option value="Nota Dinas" {% if form.data.kategori == 'Nota Dinas' or form.initial.kategori == 'Nota Dinas' %}selected{% endif %}>Nota Dinas</option>
+                <option value="Pemberitahuan" {% if form.data.kategori == 'Pemberitahuan' or form.initial.kategori == 'Pemberitahuan' %}selected{% endif %}>Pemberitahuan</option>
             </select>
         </div>
         <div class="mb-3">
             <label for="file_pdf" class="form-label">File Surat (PDF)</label>
-            <input type="file" class="form-control" id="file_pdf" name="file_pdf" accept="application/pdf" required>
+            <input type="file" class="form-control" id="file_pdf" name="file_pdf" accept="application/pdf" {% if not form.instance.pk %}required{% endif %}>
+            {% if form.instance.file_pdf %}
+                <small class="form-text text-muted">File saat ini: <a href="{{ form.instance.file_pdf.url }}" target="_blank">Lihat PDF</a></small>
+            {% endif %}
         </div>
         <div class="d-flex justify-content-between">
             <a href="/" class="btn btn-secondary">Kembali</a>
