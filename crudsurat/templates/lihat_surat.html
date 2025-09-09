@@ -10,7 +10,7 @@
                     <h4>Nomor: {{ surat.nomor_surat }}</h4>
                     <div>Kategori: {{ surat.kategori }}</div>
                     <div>Judul: {{ surat.judul }}</div>
-                    <div>Waktu Unggah: {{ surat.tanggal_unggah|date:'Y-m-d H:i' }}</div>
+                    <div>Waktu Pengarsipan: {{ surat.tanggal_unggah|date:'Y-m-d H:i' }}</div>
                 </div>
                 <a href="{% url 'surat-update' surat.pk %}" class="btn btn-warning">Edit</a>
             </div>

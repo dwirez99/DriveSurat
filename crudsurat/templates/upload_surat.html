@@ -2,13 +2,17 @@
 
 {% block page_title %}
     {% if form.instance.pk %}
-        Update Surat
+        Arsip Surat >> Ubah
     {% else %}
-        Upload Surat
+        Arsip Surat >> Unggah
     {% endif %}
 {% endblock %}
 {% block content %}
-<div class="container" style="max-width: 600px;">
+<div class="container" style="max-width: 1000px;">
+    <p class="text-muted mb-2">Unggah surat yang telah terbit pada form ini untuk diarsipkan.</p>
+    <ul class="text-muted small mb-4">
+        <li>Gunakan file berformat PDF</li>
+    </ul>
     {% if messages %}
         <div aria-live="polite" aria-atomic="true" class="position-relative">
             <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
@@ -36,45 +40,59 @@
     {% endif %}
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        <div class="mb-3">
-            <label for="judul" class="form-label">Judul Surat</label>
-            <input type="text" class="form-control" id="judul" name="judul" required value="{{ form.data.judul|default:form.initial.judul|default_if_none:'' }}">
+        <div class="row g-3 align-items-center mb-2">
+            <div class="col-md-3">
+                <label for="{{ form.nomor_surat.id_for_label }}" class="col-form-label">Nomor Surat</label>
+            </div>
+            <div class="col-md-6">
+                {{ form.nomor_surat }}
+                {% if form.nomor_surat.errors %}
+                    <div class="invalid-feedback d-block">{{ form.nomor_surat.errors.0 }}</div>
+                {% endif %}
+            </div>
         </div>
-        <div class="mb-3">
-            <label for="nomor_surat" class="form-label">Nomor Surat</label>
-            <input type="text" class="form-control" id="nomor_surat" name="nomor_surat" required value="{{ form.data.nomor_surat|default:form.initial.nomor_surat|default_if_none:'' }}">
+
+        <div class="row g-3 align-items-center mb-2">
+            <div class="col-md-3">
+                <label for="{{ form.kategori.id_for_label }}" class="col-form-label">Kategori</label>
+            </div>
+            <div class="col-md-6">
+                {{ form.kategori }}
+                {% if form.kategori.errors %}
+                    <div class="invalid-feedback d-block">{{ form.kategori.errors.0 }}</div>
+                {% endif %}
+            </div>
         </div>
-        <div class="mb-3">
-            <label for="tanggal_surat" class="form-label">Tanggal Surat</label>
-            <input type="date" class="form-control" id="tanggal_surat" name="tanggal_surat" required value="{{ form.data.tanggal_surat|default:form.initial.tanggal_surat|date:'Y-m-d' }}">
+
+        <div class="row g-3 align-items-center mb-2">
+            <div class="col-md-3">
+                <label for="{{ form.judul.id_for_label }}" class="col-form-label">Judul</label>
+            </div>
+            <div class="col-md-9">
+                {{ form.judul }}
+                {% if form.judul.errors %}
+                    <div class="invalid-feedback d-block">{{ form.judul.errors.0 }}</div>
+                {% endif %}
+            </div>
         </div>
-        <div class="mb-3">
-            <label for="pengirim" class="form-label">Pengirim</label>
-            <input type="text" class="form-control" id="pengirim" name="pengirim" required value="{{ form.data.pengirim|default:form.initial.pengirim|default_if_none:'' }}">
+
+        <div class="row g-3 align-items-center mb-4">
+            <div class="col-md-3">
+                <label for="{{ form.file_pdf.id_for_label }}" class="col-form-label">File Surat (PDF)</label>
+            </div>
+            <div class="col-md-6">
+                {{ form.file_pdf }}
+                {% if form.instance.file_pdf %}
+                    <small class="form-text text-muted d-block mt-1">File saat ini: <a href="{{ form.instance.file_pdf.url }}" target="_blank">Lihat PDF</a></small>
+                {% endif %}
+                {% if form.file_pdf.errors %}
+                    <div class="invalid-feedback d-block">{{ form.file_pdf.errors.0 }}</div>
+                {% endif %}
+            </div>
         </div>
-        <div class="mb-3">
-            <label for="penerima" class="form-label">Penerima</label>
-            <input type="text" class="form-control" id="penerima" name="penerima" required value="{{ form.data.penerima|default:form.initial.penerima|default_if_none:'' }}">
-        </div>
-        <div class="mb-3">
-            <label for="kategori" class="form-label">Kategori Surat</label>
-            <select class="form-select" id="kategori" name="kategori" required>
-                <option value="">Pilih Kategori</option>
-                <option value="Undangan" {% if form.data.kategori == 'Undangan' or form.initial.kategori == 'Undangan' %}selected{% endif %}>Undangan</option>
-                <option value="Pengumuman" {% if form.data.kategori == 'Pengumuman' or form.initial.kategori == 'Pengumuman' %}selected{% endif %}>Pengumuman</option>
-                <option value="Nota Dinas" {% if form.data.kategori == 'Nota Dinas' or form.initial.kategori == 'Nota Dinas' %}selected{% endif %}>Nota Dinas</option>
-                <option value="Pemberitahuan" {% if form.data.kategori == 'Pemberitahuan' or form.initial.kategori == 'Pemberitahuan' %}selected{% endif %}>Pemberitahuan</option>
-            </select>
-        </div>
-        <div class="mb-3">
-            <label for="file_pdf" class="form-label">File Surat (PDF)</label>
-            <input type="file" class="form-control" id="file_pdf" name="file_pdf" accept="application/pdf" {% if not form.instance.pk %}required{% endif %}>
-            {% if form.instance.file_pdf %}
-                <small class="form-text text-muted">File saat ini: <a href="{{ form.instance.file_pdf.url }}" target="_blank">Lihat PDF</a></small>
-            {% endif %}
-        </div>
+
         <div class="d-flex justify-content-between">
-            <a href="/" class="btn btn-secondary">Kembali</a>
+            <a href="{% url 'surat-list' %}" class="btn btn-secondary">« Kembali</a>
             <button type="submit" class="btn btn-primary">Simpan</button>
         </div>
     </form>

@@ -16,20 +16,20 @@
         <table class="table table-bordered table-hover">
             <thead class="table-dark">
                 <tr>
-                    <th>Judul</th>
                     <th>Nomor Surat</th>
-                    <th>Tanggal Surat</th>
                     <th>Kategori</th>
+                    <th>Judul</th>
+                    <th>Waktu Pengarsipan</th>
                     <th>Aksi</th>
                 </tr>
             </thead>
             <tbody>
                 {% for surat in surat_list %}
                 <tr>
-                    <td>{{ surat.judul }}</td>
                     <td>{{ surat.nomor_surat }}</td>
-                    <td>{{ surat.tanggal_surat }}</td>
                     <td>{{ surat.kategori }}</td>
+                    <td>{{ surat.judul }}</td>
+                    <td>{{ surat.tanggal_unggah|date:'Y-m-d H:i' }}</td>
                     <td>
                         <a href="{{ surat.get_absolute_url }}" class="btn btn-info btn-sm">Lihat Surat</a>
                         <a href="{{ surat.file_pdf.url }}" class="btn btn-success btn-sm" download>Unduh</a>
