@@ -24,3 +24,7 @@ RUN uv pip install --no-cache --system -r requirements.txt
 
 # Salin seluruh kode proyek ke direktori kerja
 COPY . /app/
+
+# Add entrypoint
+RUN chmod +x /app/entrypoint.sh
+ENTRYPOINT ["/app/entrypoint.sh"]

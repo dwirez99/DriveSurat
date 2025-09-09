@@ -17,13 +17,6 @@ services:
   # Service untuk aplikasi Django
   web:
     build: .
-    # --- PERUBAHAN DIMULAI ---
-    # Perintah diubah untuk menjalankan migrate lalu Gunicorn
-    # Gunicorn adalah WSGI server yang lebih cocok untuk production
-    command: >
-      sh -c "python manage.py migrate &&
-             uvicorn DriveSurat.asgi:application --host 0.0.0.0 --port 8000 --reload"
-    # --- PERUBAHAN SELESAI ---
     volumes:
       # Mount kode lokal ke container untuk live-reloading
       - .:/app
