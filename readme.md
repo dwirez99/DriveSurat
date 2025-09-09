@@ -40,15 +40,40 @@ http://localhost:8000/
 - Tambah kategori: menu "Kategori Surat"
 - File PDF tersimpan di folder `media/`
 
+
 ### 5. Screenshot
 
-#### Tampilan Upload Surat
-![upload_surat](screenshots/upload_surat.png)
+#### Halaman Tentang
+![About Page](screnshoot/aboutpage.png)
 
-#### Tampilan Daftar Surat
-![arsip_surat](screenshots/arsip_surat.png)
+#### Daftar Arsip Surat
+![Arsip Surat](screnshoot/arsip_surat.png)
 
-#### Tampilan Kategori Surat
-![kategori_surat](screenshots/kategori_surat.png)
+#### Edit Kategori Surat
+![Edit Kategori](screnshoot/edit_kategori.png)
 
----
+#### Edit Surat
+![Edit Surat](screnshoot/editsurat.png)
+
+#### Konfirmasi Hapus Surat
+![Hapus Surat](screnshoot/hapus_surat.png)
+
+#### Lihat Kategori
+![Lihat Kategori](screnshoot/lihatkategori.png)
+
+#### Lihat Surat
+![Lihat Surat](screnshoot/lihatsurat.png)
+![Lihat Surat 2](screnshoot/lihatsurat2.png)
+
+#### Fitur Pencarian
+![Search Bar](screnshoot/seachbar.png)
+
+#### Tambah Kategori
+![Tambah Kategori](screnshoot/tambahkategori.png)
+
+#### Unduh Surat
+![Unduh Surat](screnshoot/unduhsurat.png)
+
+#### Unggah Surat
+![Unggah Surat](screnshoot/unggah_surat.png)
+![Unggah Surat Berhasil](screnshoot/unggah_surat.png_berhasil.png)
