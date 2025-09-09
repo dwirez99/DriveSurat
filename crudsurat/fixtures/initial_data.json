@@ -1,0 +1,86 @@
+[
+{
+  "model": "crudsurat.kategorisurat",
+  "pk": 1,
+  "fields": {
+    "nama": "Draf",
+    "judul": null
+  }
+},
+{
+  "model": "crudsurat.kategorisurat",
+  "pk": 2,
+  "fields": {
+    "nama": "Undangan",
+    "judul": null
+  }
+},
+{
+  "model": "crudsurat.kategorisurat",
+  "pk": 3,
+  "fields": {
+    "nama": "Pengumuman",
+    "judul": null
+  }
+},
+{
+  "model": "crudsurat.kategorisurat",
+  "pk": 4,
+  "fields": {
+    "nama": "Nota Dinas",
+    "judul": null
+  }
+},
+{
+  "model": "crudsurat.kategorisurat",
+  "pk": 5,
+  "fields": {
+    "nama": "Pemberitahuan",
+    "judul": null
+  }
+},
+{
+  "model": "crudsurat.surat",
+  "pk": 1,
+  "fields": {
+    "nomor_surat": "123-SP.45/XX/25",
+    "kategori": "Draf",
+    "judul": "Doksli",
+    "file_pdf": "media/pakta_integritas_magang.docx.pdf",
+    "tanggal_unggah": "2025-09-08T13:48:03.703Z"
+  }
+},
+{
+  "model": "crudsurat.surat",
+  "pk": 2,
+  "fields": {
+    "nomor_surat": "RI01/09/09/25",
+    "kategori": "Pemberitahuan",
+    "judul": "Surat Pembubaran DPR",
+    "file_pdf": "media/Python-Cheat-Sheet.pdf",
+    "tanggal_unggah": "2025-09-08T15:06:06.859Z"
+  }
+},
+{
+  "model": "crudsurat.surat",
+  "pk": 3,
+  "fields": {
+    "nomor_surat": "RI1/XXX/2025/X/12",
+    "kategori": "Nota Dinas",
+    "judul": "Perjalanan Ke jalan",
+    "file_pdf": "media/IT_Roadmap.pdf",
+    "tanggal_unggah": "2025-09-08T15:07:13.000Z"
+  }
+},
+{
+  "model": "crudsurat.surat",
+  "pk": 4,
+  "fields": {
+    "nomor_surat": "1212",
+    "kategori": "Pengumuman",
+    "judul": "Pemecatan Petugas Sipil",
+    "file_pdf": "media/Top_Ten_Database_Threats.pdf",
+    "tanggal_unggah": "2025-09-08T15:07:43.595Z"
+  }
+}
+]

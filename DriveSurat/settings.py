@@ -76,11 +76,20 @@ WSGI_APPLICATION = 'DriveSurat.wsgi.application'
 
 
 # Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+# Dipaksa selalu PostgreSQL. Hilangkan fallback SQLite agar tidak terjadi kebingungan.
+# Pastikan file .env berisi: SQL_DATABASE, SQL_USER, SQL_PASSWORD, (opsional) SQL_HOST, SQL_PORT.
 
-DATABASES = {}
-if os.environ.get('SQL_DATABASE') and os.environ.get('SQL_USER') and os.environ.get('SQL_PASSWORD'):
-    DATABASES['default'] = {
+REQUIRED_DB_VARS = ['SQL_DATABASE', 'SQL_USER', 'SQL_PASSWORD']
+missing = [v for v in REQUIRED_DB_VARS if not os.environ.get(v)]
+if missing:
+    # Berikan pesan yang jelas agar developer segera men-setup environment
+    raise RuntimeError(
+        f"Environment variable database belum lengkap: {missing}. "
+        "Set variabel tersebut (lihat .env.example) sebelum menjalankan aplikasi."
+    )
+
+DATABASES = {
+    'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.environ.get('SQL_DATABASE'),
         'USER': os.environ.get('SQL_USER'),
@@ -88,11 +97,7 @@ if os.environ.get('SQL_DATABASE') and os.environ.get('SQL_USER') and os.environ.
         'HOST': os.environ.get('SQL_HOST', 'db'),
         'PORT': os.environ.get('SQL_PORT', '5432'),
     }
-else:
-    DATABASES['default'] = {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+}
 
 
 # Password validation

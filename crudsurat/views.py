@@ -9,6 +9,7 @@ from django.views.generic import (
     DeleteView
 )
 from .models import Surat, KategoriSurat
+from .forms import SuratForm
 # Kategori Surat CRUD Views
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
@@ -70,16 +71,22 @@ class SuratDetailView(DetailView):
 # Tampilan untuk membuat/mengunggah surat baru
 class UploadSuratView(CreateView):
     model = Surat
-    fields = ['judul', 'nomor_surat', 'tanggal_surat', 'pengirim', 'penerima', 'kategori', 'file_pdf']
+    form_class = SuratForm
     template_name = 'upload_surat.html'
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        # file wajib pada create
+        form.fields['file_pdf'].required = True
+        return form
 
     def form_valid(self, form):
         file_pdf = self.request.FILES.get('file_pdf')
         if file_pdf and file_pdf.name.lower().endswith('.pdf'):
             self.object = form.save()
             messages.success(self.request, "Data Berhasil Disimpan")
-            # Render the same form page with a fresh form and success message
-            return self.render_to_response(self.get_context_data(form=self.get_form(self.get_form_class())))
+            # Redirect ke halaman create agar form baru (kosong) ditampilkan
+            return redirect('surat-create')
         else:
             messages.error(self.request, "File harus berformat PDF")
             return self.form_invalid(form)
@@ -87,9 +94,42 @@ class UploadSuratView(CreateView):
 # Tampilan untuk memperbarui data surat yang sudah ada
 class SuratUpdateView(UpdateView):
     model = Surat
-    fields = ['judul', 'nomor_surat', 'tanggal_surat', 'pengirim', 'penerima', 'kategori', 'file_pdf']
+    form_class = SuratForm
     template_name = 'upload_surat.html'
     success_url = reverse_lazy('surat-list')
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        # Pada update, file_pdf tidak wajib
+        form.fields['file_pdf'].required = False
+        return form
+
+    def form_valid(self, form):
+        # Simpan file lama sebelum update
+        old_file = None
+        if self.object.file_pdf:
+            old_file = self.object.file_pdf.path
+        
+        # Cek jika ada file PDF baru yang di-upload
+        file_pdf = self.request.FILES.get('file_pdf')
+        if file_pdf:
+            if file_pdf.name.lower().endswith('.pdf'):
+                # Hapus file lama jika ada
+                if old_file and os.path.isfile(old_file):
+                    os.remove(old_file)
+                
+                # Simpan dengan file baru
+                response = super().form_valid(form)
+                messages.success(self.request, "Data Berhasil Diperbarui")
+                return response
+            else:
+                messages.error(self.request, "File harus berformat PDF")
+                return self.form_invalid(form)
+        else:
+            # Update tanpa mengubah file
+            response = super().form_valid(form)
+            messages.success(self.request, "Data Berhasil Diperbarui")
+            return response
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -105,6 +145,17 @@ class SuratDeleteView(DeleteView):
     context_object_name = 'surat'
     template_name = 'crudsurat/surat_confirm_delete.html' # Disesuaikan
     success_url = reverse_lazy('surat-list') # Disesuaikan
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        
+        # Hapus file PDF terkait sebelum menghapus objek dari DB
+        if self.object.file_pdf:
+            if os.path.isfile(self.object.file_pdf.path):
+                os.remove(self.object.file_pdf.path)
+        
+        messages.success(request, f"Surat '{self.object.judul}' berhasil dihapus")
+        return super().delete(request, *args, **kwargs)
 
 
 # View khusus untuk menampilkan PDF agar bisa di-embed dalam iframe/object
