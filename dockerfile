@@ -17,10 +17,8 @@ WORKDIR /app
 # Salin file requirements
 COPY requirements.txt /app/
 
-# --- PERUBAHAN DIMULAI ---
 # Install dependensi menggunakan uv
 RUN uv pip install --no-cache --system -r requirements.txt
-# --- PERUBAHAN SELESAI ---
 
 # Salin seluruh kode proyek ke direktori kerja
 COPY . /app/

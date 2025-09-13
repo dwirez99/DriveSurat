@@ -11,7 +11,6 @@ services:
       - POSTGRES_USER=${SQL_USER}
       - POSTGRES_PASSWORD=${SQL_PASSWORD}
     ports:
-      # Anda bisa hapus baris ini jika tidak perlu mengakses DB dari luar container
       - "5432:5432"
 
   # Service untuk aplikasi Django
